@@ -1,4 +1,4 @@
-# osnovne poizvedbe s SELECT
+# Osnovne poizvedbe s SELECT
 
 Vsi filmi z oceno večjo od 8, ki se začnejo z besedo Boter:
 ```sql
