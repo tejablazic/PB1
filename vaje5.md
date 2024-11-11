@@ -4,7 +4,7 @@
 
 stranka:
 
-id - primarni ključ tabele$\n$
+id - primarni ključ tabele
 ime - besedilna vrednost (vrednost ne sme biti NULL)
 
 ```sql
@@ -62,5 +62,5 @@ VALUES (500, 2, 'v obdelavi'),
        (800, 2, 'v obdelavi'), 
        (150, 1, 'oddano'), 
        (400, 4, 'zaključeno'), 
-       (400, 1, 'na poti'),
+       (400, 1, 'na poti');
 ```
