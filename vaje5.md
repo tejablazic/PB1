@@ -28,6 +28,9 @@ CREATE TABLE narocilo (
     stranka     integer        REFERENCES stranka(id)    NOT NULL, 
     status      varchar(10)    CHECK (status IN ('oddano', 'v obdelavi', 'na poti', 'zaključeno')) DEFAULT 'oddano'
 );
+
+--DROP TABLE IF EXISTS narocilo;
+--DROP TABLE IF EXISTS stranka;
 ```
 
 2. V bazo vstavi podatke
@@ -64,3 +67,29 @@ VALUES (500, 2, 'v obdelavi'),
        (400, 4, 'zaključeno'), 
        (400, 1, 'na poti');
 ```
+
+3. Preveri, če so stolpci nastavljeni pravilno:
+
+* ne moremo dodati naročila z neveljavno količino (npr. -100)
+```sql
+INSERT INTO narocilo (kolicina)
+VALUES (-100);
+```
+* če dodamo vrstico z veljavno količino in ID stranke, a brez statusa, se mora status nastaviti na (oddano)
+```sql
+INSERT INTO narocilo (kolicina, stranka)
+VALUES (10, 2);
+```
+* za status ne moremo nastaviti neveljavnega statusa (npr. čaka)
+```sql
+UPDATE narocilo
+SET status = 'čaka'
+WHERE stranka = 2;
+```
+* ne moremo dodati naročila z neveljavnim ID stranke (id, ki še ne obstaja v tabeli stranka, na primer 10).
+```sql
+INSERT INTO narocilo (stranka)
+VALUES (10);
+```
+
+4. Preveri, če ukazi, napisani na prejšnjih vajah delujejo tudi za novo bazo. (Po želji lahko brisanje Alenke in njenih transakcij poskusiš izvesti kot transakcijo.)
