@@ -1,3 +1,5 @@
+# Spreminjanje podatkov
+
 Dodajo tri nove stranke: Erik, Fani in Gala.
 ```sql
 INSERT INTO stranka (ime)
