@@ -4,7 +4,7 @@
 
 stranka:
 
-id - primarni ključ tabele
+id - primarni ključ tabele$\n$
 ime - besedilna vrednost (vrednost ne sme biti NULL)
 
 ```sql
@@ -16,7 +16,7 @@ CREATE TABLE stranka (
 
 narocilo:
 
-id - primarni ključ tabele\n
+id - primarni ključ tabele
 kolicina - številska vrednost (vrednost mora biti večja od 0)
 stranka - tuj ključ, tabelo povezuje s stolpcem id v tabeli stranka (vrednost ne sme biti NULL)
 status - besedilna vrednost, ki ji dolžino lahko omejimo na 10 znakov (vrednost mora biti eden izmed nizov oddano, v obdelavi, na poti, zaključeno; privzeta vrednost je oddano)
