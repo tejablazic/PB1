@@ -1,5 +1,6 @@
 # Ustvarjanje tabel
 
+# Baza naročila
 1. Ustvari bazo naročil (npr. narocila.sqlite), ki smo jo uporabljali prejšnji teden na vajah. Baza bo imela tabeli stranka in narocilo z naslednjnimi stolpci:
 
 stranka:
@@ -93,3 +94,85 @@ VALUES (10);
 ```
 
 4. Preveri, če ukazi, napisani na prejšnjih vajah delujejo tudi za novo bazo. (Po želji lahko brisanje Alenke in njenih transakcij poskusiš izvesti kot transakcijo.)
+
+# Baza učitelji
+
+1. Ustvarili bomo bazo s podaki o učiteljih na FMF.
+
+* V SQLite Studio ustvari novo bazo ucitelji in se poveži nanjo
+
+* Dodaj tabelo ucitelji, ki naj ima stolpce id, ime, priimek in email. Stolpec id naj bo tipa integer, ostali stolpci pa tipa text. Stolpec id naj bo glavni ključ tabele.
+```sql
+CREATE TABLE ucitelji (
+    id         integer    PRIMARY KEY,
+    ime        text,
+    priimek    text,
+    email      text
+);
+```
+* Dodaj tabelo predmeti, ki naj vsebuje stolpce id, ime in ects. Stolpca id in ects naj bosta tipa integer, ime predmeta pa text. Spet naj bo stolpec id glavni ključ tabele.
+```sql
+CREATE TABLE predmeti (
+    id      integer    PRIMARY KEY,
+    ime     text,
+    ects    integer
+);
+```
+* V tabeli ucitelji smo pozabili na stolpec kabinet. Tabelam lahko dodajamo stolpce na naslednji način: ALTER TABLE ime_tabele ADD COLUMN ime_stolpca tip_stolpca; Tip stolpca naj bo kar text, saj oznaka kabineta lahko vsebuje tudi piko in črke.
+```sql
+ALTER TABLE ucitelji
+ADD COLUMN kabinet text;
+```
+* Dodaj še šifrant vlog, in sicer kot tabelo vloge, ki ima stolpca id (tipa integer) in opis (tipa text). Poskrbi tudi za glavni ključ. Vloga z id 0 ustreza predavateljem, vloga 1 pa asistentom.
+```sql
+CREATE TABLE vloge (
+    id      integer    PRIMARY KEY    CHECK(id IN (0, 1)),
+    opis    text
+);
+```
+* Dodaj tabelo izvajalci, ki naj ima tri stolpce (vsi so tipa integer): idpredmeta, iducitelja in vloga. Poskrbi za ustrezne reference na ostale tabele.
+```sql
+CREATE TABLE izvajalci (
+    idpredmeta    integer    REFERENCES predmeti(id),
+    iducitelja    integer    REFERENCES ucitelji(id),
+    vloga         integer    REFERENCES vloge(id)
+);
+```
+
+2. Napolni tabele s pomočjo skript ucitelji, predmeti, vloge in izvajalci z ustreznimi stavki INSERT.
+
+* Da ne bo potrebno izvajati vsakega stavka posebej, v SQLite Studiu pritisni F10 in odstrani kljukico pri Execute only the query under the cursor. (Na MacOS zna biti bližnjica drugačna. Alternativno lahko izbereš vse vrstice s CTRL+A, če v skripti ni drugih ukazov.)
+
+3. Na bazi izvedi naslednje pozivedbe:
+
+* poizvedbo, ki poišče najbolj zasedene kabinete.
+```sql
+
+```
+* poizvedbo, ki bo prikazala vse pare cimrov. Izpisati je treba tabelo, ki ima 4 stolpce (ime1, priimek1, ime2, priimek2). Za vsaka dva učitelja, ki si delita pisarno, se mora v rezultatu pojaviti po ena vrstica.
+```sql
+
+```
+* poizvedbo, ki bo vrnila tabelo vseh trojic predmet-učitelj-asistent. Iz te tabele se bo dalo razbrati, pri kolikih predmetih sodelujeta nek učitelj in asistent.
+```sql
+
+```
+
+4. Dodatna vaja iz spreminjanja tabel:
+
+* Preverimo izvajalce predmeta Podatkovne baze 1 in popravimo na trenutno stanje:
+```sql
+
+```
+* Matija Pretnar ni več predavatelj pri predmetu PB1
+```sql
+
+```
+* Janoš Vidali je predavatelj in ne več asistent
+```sql
+
+```
+* Ajda Lampe je nova asistentka pri predmetu (in je še ni v tabeli učiteljev)
+```sql
+
+```
