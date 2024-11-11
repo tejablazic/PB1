@@ -31,3 +31,36 @@ CREATE TABLE narocilo (
 ```
 
 2. V bazo vstavi podatke
+
+Tabela stranka:
+
+id	ime
+1	Alenka
+2	Branko
+3	Cvetka
+4	David
+
+```sql
+INSERT INTO stranka (ime)
+VALUES ('Alenka'), ('Branko'), ('Cvetka'), ('David');
+```
+
+Tabela narocilo:
+
+id	kolicina	stranka	status
+1	500	        2	    v obdelavi
+2	300	        3	    na poti
+3	800	        2	    v obdelavi
+4	150	        1	    oddano
+5	400	        4	    zaključeno
+6	400	        1	    na poti
+
+```sql
+INSERT INTO narocilo (kolicina, stranka, status)
+VALUES (500, 2, 'v obdelavi'), 
+       (300, 3, 'na poti'), 
+       (800, 2, 'v obdelavi'), 
+       (150, 1, 'oddano'), 
+       (400, 4, 'zaključeno'), 
+       (400, 1, 'na poti'),
+```
