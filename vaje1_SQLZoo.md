@@ -191,7 +191,7 @@ FROM world
 WHERE name LIKE '%United%';
 ```
 
-7. Two ways to be big: A country is big if it has an area of more than 3 million sq km or it has a population of more than 250 million.
+7. Two ways to be big: A country is big if it has an area of more than 3 million sq km or it has a population of more than 250 million.  
 Show the countries that are big by area or big by population. Show name, population and area.
 ```sql
 SELECT name, population, area
@@ -217,7 +217,8 @@ WHERE (area > 3000000 AND population <= 250000000)
    OR (population > 250000000 AND area <= 3000000);
 ```
 
-9. Show the name and population in millions and the GDP in billions for the countries of the continent 'South America'. Use the ROUND function to show the values to two decimal places. For Americas show population in millions and GDP in billions both to 2 decimal places.
+9. Show the name and population in millions and the GDP in billions for the countries of the continent 'South America'. Use the ROUND function to show the values to two decimal places. For Americas show population in millions and GDP in billions both to 2 decimal places.  
+  
 *ROUND(f,p) returns f rounded to p decimal places.*
 *The number of decimal places may be negative, this will round to the nearest 10 (when p is -1) or 100 (when p is -2) or 1000 (when p is -3) etc..*
 *ROUND(7253.86, 0)    ->  7254*
@@ -241,8 +242,8 @@ FROM world
 WHERE gdp >= 1000000000000;
 ```
 
-11. Show the name and capital where the name and the capital have the same number of characters.
-You can use the LENGTH function to find the number of characters in a string.
+11. Show the name and capital where the name and the capital have the same number of characters.  
+You can use the LENGTH function to find the number of characters in a string.  
 For Microsoft SQL Server the function LENGTH is LEN.
 ```sql
 SELECT name, capital
@@ -250,8 +251,8 @@ FROM world
 WHERE LENGTH(name) = LENGTH(capital);
 ```
 
-12. Show the name and the capital where the first letters of each match. Don't include countries where the name and the capital are the same word.
-You can use the function LEFT to isolate the first character.
+12. Show the name and the capital where the first letters of each match. Don't include countries where the name and the capital are the same word.  
+You can use the function LEFT to isolate the first character.  
 You can use <> as the NOT EQUALS operator.
 ```sql
 SELECT name, capital
@@ -259,8 +260,8 @@ FROM world
 WHERE LEFT(name, 1) = LEFT(capital, 1) AND name <> capital;
 ```
 
-13. Find the country that has all the vowels and no spaces in its name.
-You can use the phrase name NOT LIKE '%a%' to exclude characters from your results.
+13. Find the country that has all the vowels and no spaces in its name.  
+You can use the phrase name NOT LIKE '%a%' to exclude characters from your results.  
 The query shown misses countries like Bahamas and Belarus because they contain at least one 'a'
 ```sql
 SELECT name
