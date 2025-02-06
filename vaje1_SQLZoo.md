@@ -133,7 +133,6 @@ WHERE capital LIKE CONCAT(name, ' %') OR capital LIKE CONCAT(name, '-%');
 
 15. The capital of Monaco is Monaco-Ville: this is the name Monaco and the extension is -Ville.  
 Show the name and the extension where the capital is a proper (non-empty) extension of name of the country.  
-  
 *You can use the SQL function REPLACE.*  
 *REPLACE(f, s1, s2) returns the string f with all occurances of s1 replaced with s2.*  
 *REPLACE('vessel','e','a') -> 'vassal'*
