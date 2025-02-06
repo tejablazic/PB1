@@ -148,14 +148,14 @@ AND REPLACE(capital, name, '') <> '';
 
 # SELECT from WORLD
 
-1. (https://sqlzoo.net/wiki/Read_the_notes_about_this_table.)
+1. [Read the notes about this table.](https://sqlzoo.net/wiki/Read_the_notes_about_this_table.)
 Observe the result of running this SQL command to show the name, continent and population of all countries.
 ```sql
 SELECT name, continent, population 
 FROM world;
 ```
 
-2. [text](https://sqlzoo.net/wiki/WHERE_filters) 
+2. [How to use WHERE to filter records.](https://sqlzoo.net/wiki/WHERE_filters) 
 Show the name for the countries that have a population of at least 200 million. 200 million is 200000000.
 ```sql
 SELECT name 
