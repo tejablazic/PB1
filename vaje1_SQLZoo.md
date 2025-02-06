@@ -26,7 +26,7 @@ WHERE area BETWEEN 200000 AND 250000;
 
 # SELECT names
 
-Pattern Matching Strings  
+**Pattern Matching Strings**  
 This tutorial uses the LIKE operator to check names. We will be using the SELECT command on the table world.
 
 1. You can use WHERE name LIKE 'B%' to find the countries that start with "B". The % is a wild-card it can match any characters.  
@@ -108,9 +108,8 @@ WHERE name = capital;
 ```
 
 12. The capital of Mexico is Mexico City. Show all the countries where the capital has the country together with the word "City".  
-Find the country where the capital is the country plus "City".
- 
-The function concat is short for concatenate - you can use it to combine two or more strings.
+Find the country where the capital is the country plus "City".  
+*The function concat is short for concatenate - you can use it to combine two or more strings.*
 
 ```sql
 SELECT name
@@ -135,8 +134,8 @@ WHERE capital LIKE CONCAT(name, ' %') OR capital LIKE CONCAT(name, '-%');
 15. The capital of Monaco is Monaco-Ville: this is the name Monaco and the extension is -Ville.  
 Show the name and the extension where the capital is a proper (non-empty) extension of name of the country.  
   
-*You can use the SQL function REPLACE.*
-*REPLACE(f, s1, s2) returns the string f with all occurances of s1 replaced with s2.*
+*You can use the SQL function REPLACE.*  
+*REPLACE(f, s1, s2) returns the string f with all occurances of s1 replaced with s2.*  
 *REPLACE('vessel','e','a') -> 'vassal'*
 
 ```sql
