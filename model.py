@@ -20,6 +20,12 @@ class Stranka:
         for id_stranke, ime in conn.execute(poizvedba):
             yield Stranka(ime, id_stranke)
 
+    @staticmethod
+    def najdi_stranko(id_stranke):
+        poizvedba = '''SELECT id, ime FROM stranka WHERE id = ?'''
+        id_stranke, ime = conn.execute(poizvedba, [id_stranke]).fetchone()
+        return Stranka(ime, id_stranke)
+
 # for rez in Stranka.vse_stranke():
 #     print(rez)
 

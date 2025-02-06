@@ -1,0 +1,10 @@
+%rebase("osnova.html", naslov="stranke")
+
+    
+<h1>Podatki o strankah</h1>
+
+<ol>
+    % for oseba in osebe:
+    <li><a href="/stranka/{{oseba.id_stranke}}">{{oseba.ime}}</a></li>
+    % end
+</ol>
