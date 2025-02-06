@@ -1,6 +1,6 @@
 # SELECT basics
 
-tabela: "world"
+tabela: "world"  
 stolpci: "name", "continent", "area", "population", "gdp"
 
 1. The example uses a WHERE clause to show the population of 'France'. Note that strings should be in 'single quotes'. 
