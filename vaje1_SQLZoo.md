@@ -581,7 +581,7 @@ We can refer to values in the outer SELECT within the inner SELECT. We can name 
 7. Find the largest country (by area) in each continent, show the continent, the name and the area:
 The above example is known as a **correlated** or **synchronized** sub-query.  
   
-*Using correlated subqueries*  
+**Using correlated subqueries**  
 A correlated subquery works like a nested loop: the subquery only has access to rows related to a single record at a time in the outer query. The technique relies on table aliases to identify two different uses of the same table, one in the outer query and the other in the subquery.  
   
 One way to interpret the line in the **WHERE** clause that references the two table is “… where the correlated values are the same”.  
