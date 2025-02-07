@@ -32,7 +32,6 @@ FROM bbc
 WHERE population > 100000000
 ORDER BY population DESC;
 ```
-
   
 ```sql
 world(name, continent, area, population, gdp)
