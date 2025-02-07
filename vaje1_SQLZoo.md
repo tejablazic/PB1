@@ -540,10 +540,11 @@ Andorra	0%
 Austria	11%  
 ...	...  
   
-*Decimal places*  
-*You can use the function ROUND to remove the decimal places.*  
-*Percent symbol %*  
-*You can use the function CONCAT to add the percentage symbol.*  
+**Decimal places**  
+You can use the function ROUND to remove the decimal places.  
+  
+**Percent symbol %**  
+You can use the function CONCAT to add the percentage symbol.  
   
 ```sql
 SELECT name, CONCAT(ROUND((population * 100.0) / (
