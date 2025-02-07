@@ -111,6 +111,10 @@ WHERE name = capital;
 Find the country where the capital is the country plus "City".  
   
 *The function concat is short for concatenate - you can use it to combine two or more strings.*
+*CONCAT allows you to stick two or more strings together.*  
+*This operation is concatenation.*  
+*CONCAT(s1, s2 ...) returns s1s2*
+*CONCAT('Africa', 'Angola') -> 'AfricaAngola'*
 
 ```sql
 SELECT name
@@ -382,4 +386,230 @@ WHERE winner LIKE 'Sir %'
 ORDER BY yr DESC, winner;
 ```
 
+# SELECT within SELECT
 
+## Using SELECT in SELECT
+See SELECT FROM SELECT for how to use a [derived table](https://sqlzoo.net/wiki/SELECT_.._SELECT).  
+
+The result of a SELECT statement may be used as a value in another statement. For example the statement SELECT continent FROM world WHERE name = 'Brazil' evaluates to 'South America' so we can use this value to obtain a list of all countries in the same continent as 'Brazil'
+
+1. List each country in the same continent as 'Brazil'.
+```sql
+SELECT name 
+FROM world 
+WHERE continent = (
+    SELECT continent 
+    FROM world 
+    WHERE name = 'Brazil'
+);
+```
+
+## Alias
+Some versions of SQL insist that you give the subquery an alias. Simply put AS somename after the closing bracket:
+```sql
+SELECT name 
+FROM world 
+WHERE continent = 
+  (SELECT continent 
+  FROM world 
+  WHERE name = 'Brazil') AS brazil_continent;
+```
+
+## Multiple Results
+The subquery may return more than one result - if this happens the query above will fail as you are testing one value against more than one value. It is safer to use IN to cope with this possibility.  
+  
+The phrase:
+```sql
+SELECT continent 
+FROM world 
+WHERE name = 'Brazil' OR name = 'Mexico';
+```
+ will return two values ('North America' and 'South America').  
+ You should use:
+```sql
+SELECT name, continent 
+FROM world
+WHERE continent IN
+ (SELECT continent 
+ FROM world 
+ WHERE name = 'Brazil' OR name = 'Mexico');
+```
+2. List each country and its continent in the same continent as 'Brazil' or 'Mexico'.
+```sql
+SELECT name, continent 
+FROM world
+WHERE continent IN
+  (SELECT continent 
+  FROM world 
+  WHERE name = 'Brazil' OR name = 'Mexico');
+```
+  
+## Subquery on the SELECT line
+If you are certain that only one value will be returned you can use that query on the SELECT line. 
+   
+3. Show the population of China as a multiple of the population of the United Kingdom.
+```sql
+SELECT population/
+  (SELECT population 
+  FROM world
+  WHERE name = 'United Kingdom')
+FROM world
+WHERE name = 'China';
+```
+  
+## Operators over a set
+These operators are binary - they normally take two parameters:
+```sql
+=     equals
+>     greater than
+<     less than
+>=    greater or equal
+<=    less or equal
+```
+You can use the words ALL or ANY where the right side of the operator might have multiple values.  
+  
+4. Show each country that has a population greater than the population of ALL countries in Europe.  
+Note that we mean greater than every single country in Europe; not the combined population of Europe.
+```sql
+SELECT name 
+FROM world
+WHERE population > ALL
+  (SELECT population 
+  FROM world
+  WHERE continent = 'Europe');
+```
+  
+world(name, continent, area, population, gdp)  
+  
+1. List each country name where the population is larger than that of 'Russia'.
+```sql
+SELECT name 
+FROM world
+WHERE population >
+  (SELECT population
+  FROM world
+  WHERE name = 'Russia');
+```
+
+2. Show the countries in Europe with a per capita GDP greater than 'United Kingdom'.  
+The per capita GDP is the gdp/population.  
+```sql
+SELECT name 
+FROM world
+WHERE gdp/population > (
+  SELECT gdp/population 
+  FROM world 
+  WHERE name = 'United Kingdom') AND continent = 'Europe';
+```
+
+3. List the name and continent of countries in the continents containing either Argentina or Australia. Order by name of the country.
+```sql
+SELECT name, continent 
+FROM world
+WHERE continent IN (
+  SELECT continent 
+  FROM world 
+  WHERE name = 'Argentina' OR name = 'Australia')
+ORDER BY name;
+```
+
+4. Which country has a population that is more than United Kingdom but less than Germany? Show the name and the population.
+```sql
+SELECT name, population 
+FROM world
+WHERE population > (
+  SELECT population 
+  FROM world 
+  WHERE name = 'United Kingdom') 
+AND population < (
+  SELECT population 
+  FROM world 
+  WHERE name = 'Germany');
+```
+
+5. Germany (population 80 million) has the largest population of the countries in Europe. Austria (population 8.5 million) has 11% of the population of Germany.  
+Show the name and the population of each country in Europe. Show the population as a percentage of the population of Germany.  
+The format should be Name, Percentage for example:  
+name	  percentage  
+Albania	3%  
+Andorra	0%  
+Austria	11%  
+...	...  
+  
+*Decimal places*  
+*You can use the function ROUND to remove the decimal places.*  
+*Percent symbol %*  
+*You can use the function CONCAT to add the percentage symbol.*  
+  
+```sql
+SELECT name, CONCAT(ROUND((population * 100.0) / (
+  SELECT population 
+  FROM world 
+  WHERE name = 'Germany'), 0), '%') AS percentage
+FROM world
+WHERE continent = 'Europe';
+```
+  
+We can use the word ALL to allow >= or > or < or <= to act over a list. For example, you can find the largest country in the world, by population with this query:  
+```sql
+SELECT name
+FROM world
+WHERE population >= ALL(
+  SELECT population
+  FROM world
+  WHERE population > 0);
+```
+You need the condition population > 0 in the sub-query as some countries have null for population.  
+  
+6. Which countries have a GDP greater than every country in Europe? [Give the name only.] (Some countries may have NULL gdp values)
+```sql
+SELECT name
+FROM world
+WHERE gdp > ALL (
+  SELECT gdp
+  FROM world
+  WHERE continent = 'Europe' AND gdp > 0);
+```
+  
+We can refer to values in the outer SELECT within the inner SELECT. We can name the tables so that we can tell the difference between the inner and outer versions.
+  
+7. Find the largest country (by area) in each continent, show the continent, the name and the area:
+The above example is known as a **correlated** or **synchronized** sub-query.  
+  
+*Using correlated subqueries*  
+A correlated subquery works like a nested loop: the subquery only has access to rows related to a single record at a time in the outer query. The technique relies on table aliases to identify two different uses of the same table, one in the outer query and the other in the subquery.  
+  
+One way to interpret the line in the **WHERE** clause that references the two table is “… where the correlated values are the same”.  
+  
+In the example provided, you would say *“select the country details from world where the area is greater than or equal to the area of all countries where the continent is the same”*.  
+```sql
+SELECT continent, name, area 
+FROM world x
+WHERE area >= ALL (
+  SELECT area 
+  FROM world y
+  WHERE y.continent = x.continent);
+```
+
+8. List each continent and the name of the country that comes first alphabetically.  
+  
+*To find the first country alphabetically in each continent, you need to use a correlated subquery that selects the minimum (alphabetically first) name for each continent.*
+```sql
+SELECT continent, name 
+FROM world x
+WHERE name = (
+  SELECT MIN(name) 
+  FROM world y 
+  WHERE y.continent = x.continent);
+```
+
+9. Find the continents where all countries have a population <= 25000000. Then find the names of the countries associated with these continents. Show name, continent and population.
+```sql
+SELECT name, continent, population
+FROM world
+WHERE continent IN (
+  SELECT continent 
+  FROM world 
+  GROUP BY continent
+  HAVING MAX(population) <= 25000000);
+```
