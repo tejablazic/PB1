@@ -1,6 +1,6 @@
 # SUM and COUNT
 
-## World Country Profile: Aggregate functions
+## Aggregate functions
 This tutorial is about aggregate functions such as COUNT, SUM and AVG. An aggregate function takes many values and delivers just one value.  
 
 ### Aggregates
@@ -32,7 +32,7 @@ FROM bbc
 WHERE population > 100000000
 ORDER BY population DESC;
 ```
-
+  
 ```sql
 world(name, continent, area, population, gdp)
 ```
