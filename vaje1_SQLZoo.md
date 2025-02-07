@@ -1,7 +1,8 @@
 # SELECT basics
 
-tabela: "world"  
-stolpci: "name", "continent", "area", "population", "gdp"
+```sql
+world(name, continent, area, population, gdp)
+```
 
 1. The example uses a WHERE clause to show the population of 'France'. Note that strings should be in 'single quotes'.  
 Modify it to show the population of Germany.
@@ -229,10 +230,10 @@ WHERE (area > 3000000 AND population <= 250000000)
 *ROUND(7253.86, 1)    ->  7253.9*
 *ROUND(7253.86,-3)    ->  7000*
 
-**Millions and billions**
-Divide by 1000000 (6 zeros) for millions. Divide by 1000000000 (9 zeros) for billions.
-**Missing decimals**
-For some version of SQL the division of an integer by an integer will be an integer. One way to prevent this is to divide by a floating point number such as 1000000.0.
+**Millions and billions**  
+Divide by 1000000 (6 zeros) for millions. Divide by 1000000000 (9 zeros) for billions.  
+**Missing decimals**  
+For some version of SQL the division of an integer by an integer will be an integer. One way to prevent this is to divide by a floating point number such as 1000000.0.  
 ```sql
 SELECT name, ROUND(population/1000000, 2), ROUND(gdp/1000000000, 2)
 FROM world
