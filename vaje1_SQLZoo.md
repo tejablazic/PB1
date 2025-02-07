@@ -232,6 +232,7 @@ WHERE (area > 3000000 AND population <= 250000000)
 
 **Millions and billions**  
 Divide by 1000000 (6 zeros) for millions. Divide by 1000000000 (9 zeros) for billions.  
+    
 **Missing decimals**  
 For some version of SQL the division of an integer by an integer will be an integer. One way to prevent this is to divide by a floating point number such as 1000000.0.  
 ```sql
@@ -480,7 +481,9 @@ WHERE population > ALL
   WHERE continent = 'Europe');
 ```
   
+```sql
 world(name, continent, area, population, gdp)  
+```
   
 1. List each country name where the population is larger than that of 'Russia'.
 ```sql
