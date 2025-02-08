@@ -110,7 +110,7 @@ FROM game JOIN goal ON matchid = id
 WHERE (team1 = 'GER' AND team2 = 'GRE');
 ```
 Instead show the name of all players who scored a goal against Germany.  
-*HINT*
+*HINT*  
 Select goals scored only by non-German players in matches where GER was the id of either team1 or team2.  
 You can use teamid != 'GER' to prevent listing German players.  
 You can use DISTINCT to stop players being listed twice.
