@@ -251,7 +251,6 @@ Notice that in some cases we refer to a field using just the field name (e.g. ac
 6. Obtain the cast list for 'Casablanca'.  
 *What is a cast list?*  
 The cast list is the names of the actors who were in the movie.  
-  
 Use movieid = 11768, (or whatever value you got from the previous question).
 ```sql
 SELECT actor.name 
