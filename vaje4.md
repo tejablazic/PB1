@@ -60,4 +60,45 @@ WHERE status = 'na poti';
   
 ## Vaje na bazi filmov
   
-Delamo z bazo filmi (ena tabela). Naloge, ki sledijo, so nekoliko kompleksnejše, saj je potrebno podatke za vstavljanje, brisanje in spreminjanje pridobiti s pomočjo ustreznih poizvedb na bazi.
+Delamo z bazo filmi (ena tabela). Naloge, ki sledijo, so nekoliko kompleksnejše, saj je potrebno podatke za vstavljanje, brisanje in spreminjanje pridobiti s pomočjo ustreznih poizvedb na bazi.  
+  
+### Dodajanje vrstic
+  
+```sql
+filmi(id, naslov, leto, reziser, certifikat, dolzina, ocena, opis)
+```
+
+1. V tabelo dodaj vsaj 5 filmov, posnetih po letu 2017. To naredi z enim ukazom **INSERT INTO**.
+```sql
+INSERT INTO filmi (naslov, leto)
+VALUES ('Barbie', 2023), ('Oppenheimer', 2023), ('It Ends With Us', 2024), ('Joker', 2019), ('Joker: Folie à Deux', 2024);
+```
+Če privzeta vrednost ne bi bila NULL:
+```sql
+INSERT INTO filmi (naslov, leto, reziser, certifikat, dolzina, ocena, opis)
+VALUES 
+    ('Barbie', 2023, 'Greta Gerwig', 'PG-13', 114, 7.5, 'Film o Barbie in Kenu.'),
+    ('Oppenheimer', 2023, 'Christopher Nolan', 'R', 180, 8.9, 'Film o očetu atomske bombe.'),
+    ('It Ends With Us', 2024, 'Justin Baldoni', 'PG-13', 125, NULL, 'Ljubezenska drama.'),
+    ('Joker', 2019, 'Todd Phillips', 'R', 122, 8.4, 'Zgodba o Jokerju.'),
+    ('Joker: Folie à Deux', 2024, 'Todd Phillips', 'R', NULL, NULL, 'Nadaljevanje Jokerja.');
+```
+
+2. Denimo, da smo posneli novo različico vseh filmov, posnetih pred letom 1950 s certifikatom G, PG ali PG-13. Vstavi jih v tabelo, z ustrezno popravljenim naslovom, opisom in režiserjem. Njihova dolžina naj bo za toliko daljša, kot je absolutna vrednost razlike med dolžino originalnega filma in povprečjem dolžin teh (pred letom 1950, s certifikatom ...) filmov. Njihova ocena naj bo za ena nižja od ocene originalnega filma. Kaj bi storili z id?
+```sql
+
+```
+
+### Spreminjanje vrstic
+  
+3. Vsem filmom določenega leta, ki imajo oceno nižjo od povprečja filmov v tem letu, dodaj dvakratno razliko med povprečjem in prvotno razliko. Tako bo film z id 22100 namesto ocene 8.4 imel oceno 8.6, saj je prvotno poprečje filmov iz leta 1931 8.5.
+```sql
+
+```
+  
+### Brisanje vrstic
+
+4. Želimo pripraviti prikaz aktivnosti določenih režiserjev. Zato bomo zbrisali vse filme tistih režiserjev, ki so režirali več kot 15 filmov (mimogrede so trije, s skupaj 58 filmi!) in jih nadomestili z novim filmom. Ta bo imel naslov Mesanica_<reziser>, leto nastanka naj bo 2023, opis ustrezen, ocena naj bo povprečje ocen filmov tega režiserja posnetih v prvih in zadnjih dveh letih njegovega ustvarjanja, dolžina pa 10 minut za vsak prvotni film. Ostale podatke si izmisli.
+```sql
+
+```
