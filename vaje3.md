@@ -1,6 +1,25 @@
 # Stikanje
 
-Zapiši poizvedbe za sledeče zahteve na bazi filmov.  
+Zapiši poizvedbe za sledeče zahteve na bazi filmov. 
+
+```sql
+film(id, naslov, dolzina, leto, ocena, metascore, glasovi, zasluzek, oznaka, opis)
+```
+```sql
+oseba(id, ime)
+```
+```sql
+oznaka(kratica)
+```
+```sql
+pripada(film, zanr)
+```
+```sql
+vloga(film, oseba, tip, mesto)
+```
+```sql
+zanr(id, naziv)
+```
   
 1. Vrni naslove filmov in imena glavnih igralcev. Rezultate uredi po imenu igralca in nato še po naslovu filma.  
 ```sql
