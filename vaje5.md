@@ -100,7 +100,7 @@ VALUES (10);
 ## Baza učitelji
 
 1. Ustvarili bomo bazo s podatki o učiteljih na FMF.
-    1. V SQLite Studio ustvari novo bazo ucitelji in se poveži nanjo
+    1. V SQLite Studio ustvari novo bazo ucitelji in se poveži nanjo.
     2. Dodaj tabelo ucitelji, ki naj ima stolpce id, ime, priimek in email. Stolpec id naj bo tipa integer, ostali stolpci pa tipa text. Stolpec id naj bo glavni ključ tabele.
     ```sql
     CREATE TABLE ucitelji (
@@ -118,7 +118,12 @@ VALUES (10);
         ects    integer
     );
     ```
-    4. V tabeli ucitelji smo pozabili na stolpec kabinet. Tabelam lahko dodajamo stolpce na naslednji način: ALTER TABLE ime_tabele ADD COLUMN ime_stolpca tip_stolpca; Tip stolpca naj bo kar text, saj oznaka kabineta lahko vsebuje tudi piko in črke.
+    4. V tabeli ucitelji smo pozabili na stolpec kabinet. Tabelam lahko dodajamo stolpce na naslednji način: 
+    ```sql
+    ALTER TABLE ime_tabele 
+    ADD COLUMN ime_stolpca tip_stolpca; 
+    ```
+    Tip stolpca naj bo kar text, saj oznaka kabineta lahko vsebuje tudi piko in črke.
     ```sql
     ALTER TABLE ucitelji
     ADD COLUMN kabinet text;
@@ -147,30 +152,69 @@ VALUES (10);
 
     1. poizvedbo, ki poišče najbolj zasedene kabinete.
     ```sql
-
+    SELECT kabinet, COUNT(kabinet)
+    FROM ucitelji
+    GROUP BY kabinet
+    ORDER BY COUNT(kabinet) DESC;
     ```
     2. poizvedbo, ki bo prikazala vse pare cimrov. Izpisati je treba tabelo, ki ima 4 stolpce (ime1, priimek1, ime2, priimek2). Za vsaka dva učitelja, ki si delita pisarno, se mora v rezultatu pojaviti po ena vrstica.
     ```sql
-
+    SELECT u1.ime AS ime1, u1.priimek AS priimek1, u2.ime AS ime2, u2.priimek AS priimek2
+    FROM ucitelji u1
+    JOIN ucitelji u2 ON u1.kabinet = u2.kabinet AND u1.id < u2.id
+    ORDER BY u1.kabinet;
     ```
     3. poizvedbo, ki bo vrnila tabelo vseh trojic predmet-učitelj-asistent. Iz te tabele se bo dalo razbrati, pri kolikih predmetih sodelujeta nek učitelj in asistent.
     ```sql
-
+    SELECT p.ime AS predmet, u1.ime || ' ' || u1.priimek AS ucitelj, u2.ime || ' ' || u2.priimek AS asistent
+    FROM izvajalci i1
+    JOIN izvajalci i2 ON i1.idpredmeta = i2.idpredmeta AND i1.vloga = 0 AND i2.vloga = 1 AND i1.iducitelja <> i2.iducitelja
+    JOIN ucitelji u1 ON i1.iducitelja = u1.id
+    JOIN ucitelji u2 ON i2.iducitelja = u2.id
+    JOIN predmeti p ON i1.idpredmeta = p.id
+    ORDER BY predmet, ucitelj, asistent;
     ```
-4. Dodatna vaja iz spreminjanja tabel:
-    1. Preverimo izvajalce predmeta Podatkovne baze 1 in popravimo na trenutno stanje:
+    oziroma:
     ```sql
-
+    SELECT p.ime AS predmet, CONCAT(u1.ime, ' ', u1.priimek) AS ucitelj, CONCAT(u2.ime, ' ', u2.priimek) AS asistent
+    FROM izvajalci i1
+    JOIN izvajalci i2 ON i1.idpredmeta = i2.idpredmeta AND i1.vloga = 0 AND i2.vloga = 1 AND i1.iducitelja <> i2.iducitelja
+    JOIN ucitelji u1 ON i1.iducitelja = u1.id
+    JOIN ucitelji u2 ON i2.iducitelja = u2.id
+    JOIN predmeti p ON i1.idpredmeta = p.id
+    ORDER BY predmet, ucitelj, asistent;
     ```
-    2. Matija Pretnar ni več predavatelj pri predmetu PB1
-    ```sql
 
+4. Dodatna vaja iz spreminjanja tabel:  
+    Preverimo izvajalce predmeta Podatkovne baze 1 in popravimo na trenutno stanje:
+    1. Matija Pretnar ni več predavatelj pri predmetu PB1.
+    ```sql
+    DELETE FROM izvajalci
+    WHERE idpredmeta = (
+        SELECT id 
+        FROM predmeti 
+        WHERE ime = 'Podatkovne baze 1') 
+    AND iducitelja = (
+        SELECT id 
+        FROM ucitelji 
+        WHERE ime = 'Matija' AND priimek = 'Pretnar') 
+    AND vloga = 0;
     ```
-    3. Janoš Vidali je predavatelj in ne več asistent
+    2. Janoš Vidali je predavatelj in ne več asistent.
     ```sql
-
+    UPDATE izvajalci
+    SET vloga = 0
+    WHERE iducitelja = (
+        SELECT id 
+        FROM ucitelji 
+        WHERE ime = 'Janoš' AND priimek = 'Vidali') 
+    AND vloga = 1;
     ```
-    4. Ajda Lampe je nova asistentka pri predmetu (in je še ni v tabeli učiteljev)
+    3. Ajda Lampe je nova asistentka pri predmetu (in je še ni v tabeli učiteljev).
     ```sql
+    INSERT INTO ucitelji (ime, priimek, email, kabinet)
+    VALUES ('Ajda', 'Lampe', 'ajda.lampe@fmf.uni-lj.si', 'M404');
 
+    INSERT INTO izvajalci (idpredmeta, iducitelja, vloga)
+    VALUES ((SELECT id FROM predmeti WHERE ime = 'Podatkovne baze 1'), (SELECT id FROM ucitelji WHERE ime = 'Ajda' AND priimek = 'Lampe'), 1);
     ```
