@@ -77,6 +77,13 @@ FROM osebe
 JOIN skupine ON osebe.id = skupine.učitelj
 GROUP BY osebe.id;
 ```
+oziroma
+```sql
+SELECT osebe.ime, osebe.priimek, SUM(skupine.ure) AS st_ur
+FROM osebe
+JOIN skupine ON skupine.učitelj = osebe.id
+GROUP BY osebe.id;
+```
 
 9. Vrnite imena in priimke vseh predavateljev, torej tistih, ki imajo kakšno skupino tipa P
 ```sql
@@ -92,6 +99,14 @@ SELECT ime, priimek
 FROM osebe
 JOIN skupine ON skupine.učitelj = osebe.id
 WHERE skupine.tip LIKE 'P';
+```
+oziroma
+```sql
+SELECT DISTINCT(osebe.ime), osebe.priimek
+FROM osebe
+JOIN skupine ON osebe.id = skupine.učitelj
+WHERE skupine.tip = 'P'
+ORDER BY osebe.id;
 ```
 
 10. Vrnite imena in priimke vseh predavateljev, ki izvajajo tako predavanja (tip P) kot vaje (tipa V ali L)
@@ -116,6 +131,14 @@ FROM (
 )
 WHERE st > 1
 ORDER BY učitelj;
+```
+oziroma
+```sql
+SELECT osebe.ime, osebe.priimek
+FROM osebe
+JOIN skupine p ON osebe.id = p.učitelj AND p.tip = 'P'
+JOIN skupine v ON osebe.id = v.učitelj AND v.tip IN ('V', 'L')
+GROUP BY osebe.id;
 ```
 
 11. Vrnite imena in smeri vseh predmetov, ki imajo kakšen seminar
@@ -168,10 +191,16 @@ JOIN dodelitve ON predmeti.id = dodelitve.predmet
 JOIN skupine ON dodelitve.skupina = skupine.id
 GROUP BY smer;
 ```
+oziroma
+```sql
+SELECT predmeti.smer, COUNT(DISTINCT(skupine.učitelj)) AS st_oseb
+FROM skupine
+JOIN dodelitve ON dodelitve.skupina = skupine.id
+JOIN predmeti ON dodelitve.predmet = predmeti.id
+GROUP BY predmeti.smer;
+```
 
 16. Vrnite pare ID-jev tistih oseb, ki sodelujejo pri vsaj dveh predmetih (ne glede na tip skupine), pri čemer naj bo prvi ID v paru manjši od drugega, pari pa naj se ne ponavljajo
-
-Uradna rešitev:
 ```sql
 SELECT s1.učitelj, s2.učitelj 
 FROM skupine AS s1
@@ -195,18 +224,21 @@ HAVING COUNT(DISTINCT d1.predmet) >= 2;
 ```
 
 17. Za vsako osebo (izpišite jo z ID-jem, imenom in priimkom) vrnite skupno število ur vaj (tako avditornih kot laboratorijskih), pri čemer naj bo to enako 0, če oseba ne izvaja nobenih vaj
-
-Uradna rešitev:
 ```sql
 SELECT osebe.id, ime, priimek, COALESCE(SUM(ure), 0) AS st_ur 
 FROM osebe
 LEFT JOIN skupine ON osebe.id = skupine.učitelj AND tip IN ('V', 'L')
 GROUP BY osebe.id, ime, priimek
 ```
+oziroma
+```sql
+SELECT osebe.id, osebe.ime, osebe.priimek, COALESCE(SUM(skupine.ure), 0) AS st_ur -- s "COALESCE" nadomestimo NULL z 0
+FROM osebe
+LEFT JOIN skupine ON osebe.id = skupine.učitelj AND skupine.tip IN ('V', 'L')
+GROUP BY osebe.id;
+```
 
 18. Vrnite ID-je, imena in smeri predmetov, za katere se izvaja seminar, ne pa tudi avditorne ali laboratorijske vaje
-
-Uradna rešitev:
 ```sql
 WITH predmeti_vaje AS (
     SELECT predmet 
@@ -219,4 +251,14 @@ FROM predmeti
 JOIN dodelitve ON predmeti.id = dodelitve.predmet
 JOIN skupine ON dodelitve.skupina = skupine.id
 WHERE skupine.tip = 'S' AND predmet NOT IN predmeti_vaje;
+```
+oziroma
+```sql
+SELECT id, ime, smer
+FROM predmeti
+JOIN dodelitve ON dodelitve.predmet = predmeti.id
+JOIN skupine ON dodelitve.skupina = skupine.id AND skupine.tip = 'S'
+LEFT JOIN dodelitve AS d ON predmeti.id = d.predmet
+LEFT JOIN skupine AS s ON d.skupina = s.id AND s.tip IN ('V', 'L')
+WHERE s.id IS NULL;
 ```
