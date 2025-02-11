@@ -2,25 +2,29 @@
 
 1. Vrnite tabelo imen in priimkov vseh oseb, ki jim je ime Matija
 ```sql
-SELECT ime, priimek FROM osebe
+SELECT ime, priimek 
+FROM osebe
 WHERE ime = 'Matija';
 ```
 
 2. Vrnite tabelo imen in priimkov vseh oseb, urejeno po priimku
 ```sql
-SELECT ime, priimek FROM osebe
+SELECT ime, priimek 
+FROM osebe
 ORDER BY priimek;
 ```
 
 3. Vrnite imena vseh predmetov na praktični matematiki (smer: 1PrMa)
 ```sql
-SELECT ime FROM predmeti
+SELECT ime 
+FROM predmeti
 WHERE smer = '1PrMa';
 ```
 
 4. Vrnite vse podatke o skupinah z manj kot eno uro
 ```sql
-SELECT * FROM skupine
+SELECT * 
+FROM skupine
 WHERE ure < 1;
 ```
 
@@ -34,19 +38,18 @@ GROUP BY smer;
 6. Vrnite imena tistih predmetov, ki se pojavljajo na več smereh
 ```sql
 SELECT ime 
-FROM (
-    SELECT ime, COUNT(smer) AS st 
-    FROM predmeti
-    GROUP BY ime
-)
-WHERE st > 1;
+FROM predmeti
+GROUP BY ime
+HAVING COUNT(DISTINCT smer) > 1;
 ```
 
 7. Vrnite imena in vse pripadajoče smeri tistih predmetov, ki se pojavljajo na več smereh
 ```sql
-SELECT ime, smer FROM predmeti
+SELECT ime, smer 
+FROM predmeti
 WHERE ime IN (
-    SELECT ime FROM predmeti
+    SELECT ime 
+    FROM predmeti
     GROUP BY ime
     HAVING COUNT(DISTINCT(smer)) > 1
 )
@@ -54,13 +57,16 @@ ORDER BY ime;
 ```
 oziroma
 ```sql
-SELECT * FROM (
-    SELECT ime, smer FROM (
+SELECT * 
+FROM (
+    SELECT ime, smer 
+    FROM (
         SELECT ime, smer, COUNT(smer) AS st 
         FROM predmeti
-    GROUP BY ime
+        GROUP BY ime
+    )
+    WHERE st > 1
 )
-WHERE st > 1)
 ORDER BY ime;
 ```
 
@@ -71,17 +77,12 @@ FROM osebe
 JOIN skupine ON osebe.id = skupine.učitelj
 GROUP BY osebe.id;
 ```
-oziroma
-```sql
-SELECT osebe.ime, osebe.priimek, COUNT(ure) FROM skupine
-JOIN osebe ON skupine.učitelj = osebe.id
-GROUP BY osebe.id;
-```
 
 9. Vrnite imena in priimke vseh predavateljev, torej tistih, ki imajo kakšno skupino tipa P
 ```sql
-SELECT ime, priimek FROM osebe
-    JOIN skupine ON osebe.id = skupine.učitelj
+SELECT ime, priimek 
+FROM osebe
+JOIN skupine ON osebe.id = skupine.učitelj
 WHERE skupine.tip = 'P'
 GROUP BY osebe.id;
 ```
@@ -95,10 +96,12 @@ WHERE skupine.tip LIKE 'P';
 
 10. Vrnite imena in priimke vseh predavateljev, ki izvajajo tako predavanja (tip P) kot vaje (tipa V ali L)
 ```sql
-SELECT ime, priimek FROM osebe
-    JOIN skupine s1 ON osebe.id = s1.učitelj
+SELECT ime, priimek 
+FROM osebe
+JOIN skupine s1 ON osebe.id = s1.učitelj
 WHERE s1.tip = 'P' AND EXISTS (
-    SELECT 1 FROM skupine s2
+    SELECT 1 
+    FROM skupine s2
     WHERE s1.učitelj = s2.učitelj AND s2.tip IN ('V', 'L')
 )
 GROUP BY osebe.id;
@@ -121,7 +124,7 @@ SELECT DISTINCT ime, smer
 FROM predmeti
 JOIN dodelitve ON predmeti.id = dodelitve.predmet
 JOIN skupine ON skupine.id = dodelitve.skupina
-WHERE skupine.tip == 'S';
+WHERE skupine.tip = 'S';
 ```
 
 12. Vsem predmetom na smeri 2PeMa spremenite smer na PeMa
@@ -151,32 +154,18 @@ WHERE id NOT IN (
 14. Za vsak predmet, ki se pojavi tako na prvi kot drugi stopnji (smer se začne z 1 oz. 2), dodajte nov predmet z istim imenom in smerjo 0Mate (stolpca id ne nastavljajte, ker se bo samodejno določil)
 ```sql
 INSERT INTO predmeti (ime, smer)
-SELECT ime, '0Mate' FROM predmeti
-WHERE smer LIKE '1%' OR smer LIKE '2%';
-```
-oziroma
-```sql
-INSERT INTO predmeti (ime, smer)
 SELECT DISTINCT p1.ime, '0Mate' 
 FROM predmeti AS p1
 JOIN predmeti AS p2 ON p1.ime = p2.ime
 WHERE p1.smer LIKE '1%' AND p2.smer LIKE '2%';
 ```
-------------------- OD TU NAPREJ JE PREGLEDANO -------------------
 
 15. Za vsako smer izpišite število različnih oseb, ki na njej poučujejo
-
-Uradna rešitev:
 ```sql
-SELECT * FROM predmeti
-    JOIN dodelitve ON predmeti.id = dodelitve.predmet
-    JOIN skupine ON dodelitve.skupina = skupine.id;
-```
-Ali:
-```sql
-SELECT smer, COUNT(DISTINCT učitelj) AS st_uciteljev FROM predmeti
-    JOIN dodelitve ON predmeti.id = dodelitve.predmet
-    JOIN skupine ON dodelitve.skupina = skupine.id
+SELECT smer, COUNT(DISTINCT učitelj) AS st_uciteljev 
+FROM predmeti
+JOIN dodelitve ON predmeti.id = dodelitve.predmet
+JOIN skupine ON dodelitve.skupina = skupine.id
 GROUP BY smer;
 ```
 
@@ -184,13 +173,25 @@ GROUP BY smer;
 
 Uradna rešitev:
 ```sql
-SELECT s1.učitelj, s2.učitelj FROM skupine AS s1
-    JOIN dodelitve AS d1 ON s1.id = d1.skupina
-    JOIN dodelitve AS d2 USING(predmet) -- USING vzame dve tabeli in jih združi glede na stolpec predmet
-    JOIN skupine AS s2 ON d2.skupina = s2.id
+SELECT s1.učitelj, s2.učitelj 
+FROM skupine AS s1
+JOIN dodelitve AS d1 ON s1.id = d1.skupina
+JOIN dodelitve AS d2 USING(predmet) -- USING vzame dve tabeli in jih združi glede na stolpec predmet
+JOIN skupine AS s2 ON d2.skupina = s2.id
 WHERE s1.učitelj < s2.učitelj
 GROUP BY s1.učitelj, s2.učitelj
 HAVING COUNT(DISTINCT predmet) >= 2; -- izberi tiste skupine kjer je število različnih predmetov vsaj 2
+```
+oziroma
+```sql
+SELECT s1.učitelj, s2.učitelj
+FROM skupine AS s1
+JOIN dodelitve AS d1 ON s1.id = d1.skupina
+JOIN dodelitve AS d2 ON d1.predmet = d2.predmet
+JOIN skupine AS s2 ON d2.skupina = s2.id
+WHERE s1.učitelj < s2.učitelj
+GROUP BY s1.učitelj, s2.učitelj
+HAVING COUNT(DISTINCT d1.predmet) >= 2;
 ```
 
 17. Za vsako osebo (izpišite jo z ID-jem, imenom in priimkom) vrnite skupno število ur vaj (tako avditornih kot laboratorijskih), pri čemer naj bo to enako 0, če oseba ne izvaja nobenih vaj
