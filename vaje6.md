@@ -20,21 +20,26 @@ WHERE smer = '1PrMa';
 
 4. Vrnite vse podatke o skupinah z manj kot eno uro
 ```sql
-SELECT id, učitelj, ure, tip FROM skupine
+SELECT * FROM skupine
 WHERE ure < 1;
 ```
 
 5. Vrnite število vseh predmetov na posamezni smeri
 ```sql
-SELECT smer, COUNT(*) AS st_predmetov FROM predmeti
+SELECT COUNT(ime), smer 
+FROM predmeti
 GROUP BY smer;
 ```
 
 6. Vrnite imena tistih predmetov, ki se pojavljajo na več smereh
 ```sql
-SELECT ime FROM predmeti
-GROUP BY smer
-HAVING COUNT(smer) > 1;
+SELECT ime 
+FROM (
+    SELECT ime, COUNT(smer) AS st 
+    FROM predmeti
+    GROUP BY ime
+)
+WHERE st > 1;
 ```
 
 7. Vrnite imena in vse pripadajoče smeri tistih predmetov, ki se pojavljajo na več smereh
@@ -47,11 +52,29 @@ WHERE ime IN (
 )
 ORDER BY ime;
 ```
+oziroma
+```sql
+SELECT * FROM (
+    SELECT ime, smer FROM (
+        SELECT ime, smer, COUNT(smer) AS st 
+        FROM predmeti
+    GROUP BY ime
+)
+WHERE st > 1)
+ORDER BY ime;
+```
 
 8. Vrnite skupno število ur vsake osebe
 ```sql
-SELECT osebe.ime, osebe.priimek, SUM(ure) AS skupno_st_ur FROM osebe
-    JOIN skupine ON osebe.id = skupine.učitelj
+SELECT osebe.ime, osebe.priimek, SUM(ure) AS skupno_st_ur 
+FROM osebe
+JOIN skupine ON osebe.id = skupine.učitelj
+GROUP BY osebe.id;
+```
+oziroma
+```sql
+SELECT osebe.ime, osebe.priimek, COUNT(ure) FROM skupine
+JOIN osebe ON skupine.učitelj = osebe.id
 GROUP BY osebe.id;
 ```
 
@@ -61,6 +84,13 @@ SELECT ime, priimek FROM osebe
     JOIN skupine ON osebe.id = skupine.učitelj
 WHERE skupine.tip = 'P'
 GROUP BY osebe.id;
+```
+oziroma
+```sql
+SELECT ime, priimek 
+FROM osebe
+JOIN skupine ON skupine.učitelj = osebe.id
+WHERE skupine.tip LIKE 'P';
 ```
 
 10. Vrnite imena in priimke vseh predavateljev, ki izvajajo tako predavanja (tip P) kot vaje (tipa V ali L)
@@ -73,10 +103,25 @@ WHERE s1.tip = 'P' AND EXISTS (
 )
 GROUP BY osebe.id;
 ```
+oziroma
+```sql
+SELECT učitelj, tip, st 
+FROM (
+    SELECT učitelj, tip, COUNT(tip) AS st 
+    FROM skupine
+    GROUP BY učitelj
+)
+WHERE st > 1
+ORDER BY učitelj;
+```
 
 11. Vrnite imena in smeri vseh predmetov, ki imajo kakšen seminar
 ```sql
-
+SELECT DISTINCT ime, smer 
+FROM predmeti
+JOIN dodelitve ON predmeti.id = dodelitve.predmet
+JOIN skupine ON skupine.id = dodelitve.skupina
+WHERE skupine.tip == 'S';
 ```
 
 12. Vsem predmetom na smeri 2PeMa spremenite smer na PeMa
@@ -94,12 +139,28 @@ WHERE id NOT IN (
     FROM dodelitve
 );
 ```
+oziroma
+```sql
+DELETE FROM predmeti
+WHERE id NOT IN (
+    SELECT predmet 
+    FROM dodelitve
+);
+```
 
 14. Za vsak predmet, ki se pojavi tako na prvi kot drugi stopnji (smer se začne z 1 oz. 2), dodajte nov predmet z istim imenom in smerjo 0Mate (stolpca id ne nastavljajte, ker se bo samodejno določil)
 ```sql
 INSERT INTO predmeti (ime, smer)
 SELECT ime, '0Mate' FROM predmeti
 WHERE smer LIKE '1%' OR smer LIKE '2%';
+```
+oziroma
+```sql
+INSERT INTO predmeti (ime, smer)
+SELECT DISTINCT p1.ime, '0Mate' 
+FROM predmeti AS p1
+JOIN predmeti AS p2 ON p1.ime = p2.ime
+WHERE p1.smer LIKE '1%' AND p2.smer LIKE '2%';
 ```
 ------------------- OD TU NAPREJ JE PREGLEDANO -------------------
 
@@ -136,8 +197,9 @@ HAVING COUNT(DISTINCT predmet) >= 2; -- izberi tiste skupine kjer je število ra
 
 Uradna rešitev:
 ```sql
-SELECT osebe.id, ime, priimek, COALESCE(SUM(ure), 0) AS st_ur FROM osebe
-    LEFT JOIN skupine ON osebe.id = skupine.učitelj AND tip IN ('V', 'L')
+SELECT osebe.id, ime, priimek, COALESCE(SUM(ure), 0) AS st_ur 
+FROM osebe
+LEFT JOIN skupine ON osebe.id = skupine.učitelj AND tip IN ('V', 'L')
 GROUP BY osebe.id, ime, priimek
 ```
 
@@ -146,12 +208,14 @@ GROUP BY osebe.id, ime, priimek
 Uradna rešitev:
 ```sql
 WITH predmeti_vaje AS (
-    SELECT predmet FROM dodelitve
-        JOIN skupine ON dodelitve.skupina = skupine.id
+    SELECT predmet 
+    FROM dodelitve
+    JOIN skupine ON dodelitve.skupina = skupine.id
     WHERE skupine.tip IN ('V', 'L')
 )
-SELECT DISTINCT predmeti.id, ime, smer FROM predmeti
-    JOIN dodelitve ON predmeti.id = dodelitve.predmet
-    JOIN skupine ON dodelitve.skupina = skupine.id
+SELECT DISTINCT predmeti.id, ime, smer 
+FROM predmeti
+JOIN dodelitve ON predmeti.id = dodelitve.predmet
+JOIN skupine ON dodelitve.skupina = skupine.id
 WHERE skupine.tip = 'S' AND predmet NOT IN predmeti_vaje;
 ```
