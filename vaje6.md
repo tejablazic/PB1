@@ -1,5 +1,19 @@
 # Poskusni izpit
 
+Imamo tabele:
+```sql
+osebe(id, ime, priimek)
+```
+```sql
+predmeti(id, ime, smer)
+```
+```sql
+skupine(id, učitelj, ure, tip)
+```
+```sql
+dodelitve(skupina, predmet)
+```
+
 1. Vrnite tabelo imen in priimkov vseh oseb, ki jim je ime Matija
 ```sql
 SELECT ime, priimek 
