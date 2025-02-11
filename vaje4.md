@@ -84,16 +84,44 @@ VALUES
     ('Joker: Folie à Deux', 2024, 'Todd Phillips', 'R', NULL, NULL, 'Nadaljevanje Jokerja.');
 ```
 
-2. Denimo, da smo posneli novo različico vseh filmov, posnetih pred letom 1950 s certifikatom G, PG ali PG-13. Vstavi jih v tabelo, z ustrezno popravljenim naslovom, opisom in režiserjem. Njihova dolžina naj bo za toliko daljša, kot je absolutna vrednost razlike med dolžino originalnega filma in povprečjem dolžin teh (pred letom 1950, s certifikatom ...) filmov. Njihova ocena naj bo za ena nižja od ocene originalnega filma. Kaj bi storili z id?
+2. Denimo, da smo posneli novo različico vseh filmov, posnetih pred letom 1950 s certifikatom G, PG ali PG-13. Vstavi jih v tabelo, z ustrezno popravljenim naslovom, opisom in režiserjem. Njihova dolžina naj bo za toliko daljša, kot je absolutna vrednost razlike med dolžino originalnega filma in povprečjem dolžin teh (pred letom 1950, s certifikatom ...) filmov. Njihova ocena naj bo za ena nižja od ocene originalnega filma. Kaj bi storili z id?  
+  
+* Uporaba **INSERT INTO ... VALUES** (za ročno vstavljanje enega ali več statičnih zapisov). To uporabimo, kadar sami določimo podatke in jih vnesemo ročno.
+* Uporaba **INSERT INTO ... SELECT** (za vstavljanje podatkov iz obstoječe tabele). To uporabimo, kadar želimo dinamično generirati nove podatke iz obstoječih.
 ```sql
-
+INSERT INTO filmi (naslov, leto, reziser, certifikat, dolzina, ocena, opis)
+SELECT 
+    naslov || ' (Remake)', -- CONCAT(naslov, ' (Remake)');
+    2025, 
+    'Nov režiser', 
+    certifikat,  
+    dolzina + ABS(dolzina - (
+        SELECT AVG(dolzina) 
+        FROM filmi 
+        WHERE leto < 1950 AND certifikat IN ('G', 'PG', 'PG-13'))),  
+    CASE WHEN ocena IS NOT NULL THEN ocena - 1 
+        ELSE NULL 
+    END,  
+    'Remake filma: ' || opis  
+FROM filmi 
+WHERE leto < 1950 
+AND certifikat IN ('G', 'PG', 'PG-13');
 ```
 
 ### Spreminjanje vrstic
   
-3. Vsem filmom določenega leta, ki imajo oceno nižjo od povprečja filmov v tem letu, dodaj dvakratno razliko med povprečjem in prvotno razliko. Tako bo film z id 22100 namesto ocene 8.4 imel oceno 8.6, saj je prvotno poprečje filmov iz leta 1931 8.5.
+3. Vsem filmom določenega leta, ki imajo oceno nižjo od povprečja filmov v tem letu, dodaj dvakratno razliko med povprečjem in prvotno razliko. Tako bo film z id 22100 namesto ocene 8.4 imel oceno 8.6, saj je prvotno povprečje filmov iz leta 1931 8.5.
 ```sql
-
+UPDATE filmi 
+SET ocena = ocena + 2 * ((
+    SELECT AVG(ocena) 
+    FROM filmi AS f2 
+    WHERE f2.leto = filmi.leto) - ocena
+)
+WHERE ocena < (
+    SELECT AVG(ocena) 
+    FROM filmi AS f2 
+    WHERE f2.leto = filmi.leto);
 ```
   
 ### Brisanje vrstic
