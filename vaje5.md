@@ -218,3 +218,33 @@ VALUES (10);
     INSERT INTO izvajalci (idpredmeta, iducitelja, vloga)
     VALUES ((SELECT id FROM predmeti WHERE ime = 'Podatkovne baze 1'), (SELECT id FROM ucitelji WHERE ime = 'Ajda' AND priimek = 'Lampe'), 1);
     ```
+
+## Baza nobel
+
+```sql
+CREATE TABLE nagrajenec (
+    id               INTEGER PRIMARY KEY,
+    ime              TEXT NOT NULL,
+    tip              TEXT NOT NULL CHECK(tip IN ('oseba', 'organizacija')),
+    datum_rojstva    DATE,
+    drzava           TEXT
+);
+```
+
+```sql
+CREATE TABLE nagrada (
+    id              INTEGER PRIMARY KEY,
+    ime             TEXT NOT NULL,
+    ustanovitev     DATE NOT NULL,
+    podeljevalec    TEXT NOT NULL
+);
+```
+
+```sql
+CREATE TABLE zmaga (
+    id_nagrajenec    INTEGER REFERENCES nagrajenec(id),
+    id_nagrada       INTEGER REFERENCES nagrada(id),
+    leto             INTEGER,
+    PRIMARY KEY (id_nagrajenec, id_nagrada, leto)
+);
+```

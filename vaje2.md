@@ -1,5 +1,15 @@
 # Združevanje
 
+Vsi filmi, ki imajo oceno enako ali višjo od najvišje ocene med filmi, ki so bili izdani v istem letu.
+```sql
+SELECT * FROM film 
+WHERE ocena >= (
+    SELECT MAX(ocena) 
+    FROM film 
+    WHERE leto = leto 
+)
+```
+
 Povprečna ocena filmov iz leta 2000
 ```sql
 SELECT AVG(ocena) AS povp_ocena
