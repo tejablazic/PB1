@@ -112,17 +112,17 @@ WHERE (team1 = 'GER' AND team2 = 'GRE');
 Instead show the name of all players who scored a goal against Germany.  
 *HINT*  
 Select goals scored only by non-German players in matches where GER was the id of either team1 or team2.  
-You can use teamid != 'GER' to prevent listing German players.  
-You can use DISTINCT to stop players being listed twice.
+You can use **teamid != 'GER'** to prevent listing German players.  
+You can use **DISTINCT** to stop players being listed twice.
 ```sql
-SELECT DISTINCT(player)
+SELECT DISTINCT player
 FROM goal JOIN game ON id = matchid 
 WHERE teamid != 'GER' AND (team1 = 'GER' OR team2 = 'GER');
 ```
 
 9. Show teamname and the total number of goals scored.  
 *COUNT and GROUP BY*  
-You should COUNT(*) in the SELECT line and GROUP BY teamname.  
+You should **COUNT(*)** in the **SELECT** line and **GROUP BY** teamname.  
 ```sql
 SELECT teamname, COUNT(*)
 FROM goal
@@ -170,7 +170,7 @@ END
 ```sql
 SELECT name, population, 
 CASE WHEN population < 1000000 THEN 'small'
-     WHEN population<10000000 THEN 'medium'
+     WHEN population < 10000000 THEN 'medium'
      ELSE 'large'
 END
 FROM bbc
@@ -229,7 +229,8 @@ WHERE title = 'Casablanca';
 ## Joining two tables
 1. Join casting and actor on actorid/id.
 ```sql
-SELECT * FROM casting 
+SELECT * 
+FROM casting 
 JOIN actor ON casting.actorid = actor.id
 WHERE actor.name = 'John Hurt';
 ```
@@ -356,7 +357,8 @@ SELECT DISTINCT actor.name
 FROM casting
 JOIN actor ON casting.actorid = actor.id
 WHERE casting.movieid IN (
-    SELECT movieid FROM casting 
+    SELECT movieid 
+    FROM casting 
     JOIN actor ON casting.actorid = actor.id 
     WHERE actor.name = 'Art Garfunkel'
 )
