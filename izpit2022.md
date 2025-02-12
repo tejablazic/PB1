@@ -106,10 +106,12 @@ rezultat(kolesar, etapa, mesto, cas, tocke)
 5. naloga
     * Za Tadeja Pogačarja (kolesar.id = 6) izpišite njegov skupni čas po vsaki etapi - tj., izpišite številko etape in njegov skupni čas do vključno te etape v obliki dni:ure:minute:sekunde.
     ```sql
-    SELECT etapa, strftime('%w:%H:%M:%S', SUM(cas) OVER (ORDER BY etapa), 'unixepoch', '-4 days') AS skupni_cas -- ?????
+    SELECT etapa, strftime('%w:%H:%M:%S', SUM(cas) OVER (ORDER BY etapa), 'unixepoch', '-4 days') AS skupni_cas
     FROM rezultat
     WHERE kolesar = 6;
     ```
+    * To je okenska funkcija **(SUM() OVER (...))**, ki izračuna tekočo vsoto (SUM(cas)) od začetka do trenutne etape.
+    * **ORDER BY** etapa zagotavlja, da se vsota sešteva po vrstnem redu etap. To pomeni, da bo vsakemu rezultatu dodeljen skupni čas do tiste etape.
 
     *  Za vsako etapo najvišje uvrščenemu mlademu kolesarju (tj., takemu, ki ima najmanjšo vrednost v stolpcu mesto) prištejte 5 točk pri tej etapi.
     ```sql
@@ -132,3 +134,9 @@ rezultat(kolesar, etapa, mesto, cas, tocke)
     WHERE najvisje_uvrsceni.vrstni_red = 1
     ORDER BY najvisje_uvrsceni.etapa;
     ```
+
+    Uporaba RANK():
+    * PARTITION BY rezultat.etapa → razdeli podatke po etapah (vsaka etapa se obravnava ločeno).
+    * ORDER BY rezultat.mesto → mladi kolesarji se razvrstijo po najboljši uvrstitvi (najmanjši mesto).
+    * RANK() dodeli vrstni red z 1 za najboljšega mladega kolesarja.
+    * Če več kolesarjev deli isto mesto, vsi dobijo enako vrednost RANK().
