@@ -18,7 +18,7 @@ INSERT INTO stranka (ime)
 VALUES ('Erik'), ('Fani'), ('Gala');
 ```
 
-2. Popravi status naročila z id 3 na na poti.
+2. Popravi status naročila z id 3 na 'na poti'.
 ```sql
 UPDATE narocilo
 SET status = 'na poti'
@@ -48,7 +48,9 @@ WHERE ime = 'Alenka';
 INSERT INTO narocilo (kolicina, stranka)
 SELECT 100 * id, id
 FROM stranka
-WHERE id NOT IN (SELECT DISTINCT stranka FROM narocilo);
+WHERE id NOT IN (
+    SELECT DISTINCT stranka 
+    FROM narocilo);
 ```
 
 6. Zaključi vsa naročila, ki so na poti.
@@ -88,6 +90,7 @@ VALUES
   
 * Uporaba **INSERT INTO ... VALUES** (za ročno vstavljanje enega ali več statičnih zapisov). To uporabimo, kadar sami določimo podatke in jih vnesemo ročno.
 * Uporaba **INSERT INTO ... SELECT** (za vstavljanje podatkov iz obstoječe tabele). To uporabimo, kadar želimo dinamično generirati nove podatke iz obstoječih.
+
 ```sql
 INSERT INTO filmi (naslov, leto, reziser, certifikat, dolzina, ocena, opis)
 SELECT 
