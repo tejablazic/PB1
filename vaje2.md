@@ -2,29 +2,30 @@
 
 Vsi filmi, ki imajo oceno enako ali višjo od najvišje ocene med filmi, ki so bili izdani v istem letu.
 ```sql
-SELECT * FROM film 
+SELECT * 
+FROM film x
 WHERE ocena >= (
     SELECT MAX(ocena) 
-    FROM film 
-    WHERE leto = leto 
+    FROM film y
+    WHERE x.leto = y.leto 
 )
 ```
 
-Povprečna ocena filmov iz leta 2000
+Povprečna ocena filmov iz leta 2000.
 ```sql
 SELECT AVG(ocena) AS povp_ocena
 FROM filmi
 WHERE leto = 2000;
 ```
 
-Povprečna ocena filmov za vsako leto
+Povprečna ocena filmov za vsako leto.
 ```sql
 SELECT leto, AVG(ocena) AS povp_ocena
 FROM filmi
 GROUP BY leto;
 ```
 
-Povprečna ocena filmov daljših od 100 minut za vsako leto, ko je bilo vsaj 5 filmov
+Povprečna ocena filmov daljših od 100 minut za vsako leto, ko je bilo vsaj 5 filmov.
 ```sql
 SELECT leto, AVG(ocena) AS povp_ocena, COUNT(*) AS st_filmov
 FROM filmi

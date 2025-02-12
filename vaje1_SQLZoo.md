@@ -7,81 +7,93 @@ world(name, continent, area, population, gdp)
 1. The example uses a WHERE clause to show the population of 'France'. Note that strings should be in 'single quotes'.  
 Modify it to show the population of Germany.
 ```sql
-SELECT population FROM world
+SELECT population 
+FROM world
 WHERE name = 'Germany';
 ```
 
-2. Checking a list The word IN allows us to check if an item is in a list. The example shows the name and population for the countries 'Brazil', 'Russia', 'India' and 'China'.  
+2. Checking a list The word **IN** allows us to check if an item is in a list. The example shows the name and population for the countries 'Brazil', 'Russia', 'India' and 'China'.  
 Show the name and the population for 'Sweden', 'Norway' and 'Denmark'.
 ```sql
-SELECT name, population FROM world
+SELECT name, population 
+FROM world
 WHERE name IN ('Sweden', 'Norway', 'Denmark');
 ```
 
-3. Which countries are not too small and not too big? BETWEEN allows range checking (range specified is inclusive of boundary values). The example below shows countries with an area of 250,000-300,000 sq. km.  
+3. Which countries are not too small and not too big? **BETWEEN** allows range checking (range specified is inclusive of boundary values). The example below shows countries with an area of 250,000-300,000 sq. km.  
 Modify it to show the country and the area for countries with an area between 200,000 and 250,000.
 ```sql
-SELECT name, area FROM world
+SELECT name, area 
+FROM world
 WHERE area BETWEEN 200000 AND 250000;
 ```
 
 # SELECT names
 
 **Pattern Matching Strings**  
-This tutorial uses the LIKE operator to check names. We will be using the SELECT command on the table world.
+This tutorial uses the **LIKE** operator to check names. We will be using the **SELECT** command on the table world.
 
-1. You can use WHERE name LIKE 'B%' to find the countries that start with "B". The % is a wild-card it can match any characters.  
+1. You can use **WHERE name LIKE 'B%'** to find the countries that start with "B". The % is a wild-card it can match any characters.  
 Find the country that start with "Y".
 ```sql
-SELECT name FROM world
+SELECT name 
+FROM world
 WHERE name LIKE 'Y%';
 ```
 
 2. Find the countries that end with "y".
 ```sql
-SELECT name FROM world
+SELECT name 
+FROM world
 WHERE name LIKE '%y';
 ```
 
 3. Find the countries that contain the letter "x".
 ```sql
-SELECT name FROM world
+SELECT name 
+FROM world
 WHERE name LIKE '%x%';
 ```
 
 4. Find the countries that end with "land".
 ```sql
-SELECT name FROM world
+SELECT name 
+FROM world
 WHERE name LIKE '%land';
 ```
 
 5. Find the countries that start with "C" and end with "ia".
 ```sql
-SELECT name FROM world
+SELECT name 
+FROM world
 WHERE name LIKE 'C%ia';
 ```
 
 6. Find the country that has "oo" in the name.
 ```sql
-SELECT name FROM world
+SELECT name 
+FROM world
 WHERE name LIKE '%oo%';
 ```
 
 7. Find the countries that have three or more "a" in the name.
 ```sql
-SELECT name FROM world
+SELECT name 
+FROM world
 WHERE name LIKE '%a%a%a%';
 ```
 
 8. India and Angola have an "n" as the second character. You can use the underscore as a single character wildcard.
 ```sql
-SELECT name FROM world
+SELECT name 
+FROM world
 WHERE name LIKE '_n%'
 ORDER BY name;
 ```
 Find the countries that have "t" as the second character.
 ```sql
-SELECT name FROM world
+SELECT name 
+FROM world
 WHERE name LIKE '_t%'
 ORDER BY name;
 ```
@@ -89,14 +101,16 @@ ORDER BY name;
 9. Lesotho and Moldova both have two "o" characters separated by two other characters.  
 Find the countries that have two "o" characters separated by two others.
 ```sql
-SELECT name FROM world
+SELECT name 
+FROM world
 WHERE name LIKE '%o__o%';
 ```
 
 10. Cuba and Togo have four characters names.  
 Find the countries that have exactly four characters.
 ```sql
-SELECT name FROM world
+SELECT name 
+FROM world
 WHERE name LIKE '____';
 ```
 
@@ -204,7 +218,7 @@ FROM world
 WHERE area > 3000000 OR population > 250000000;
 ```
 
-8. Exclusive OR (XOR). Show the countries that are big by area (more than 3 million) or big by population (more than 250 million) but not both. Show name, population and area.
+8. Exclusive OR (**XOR**). Show the countries that are big by area (more than 3 million) or big by population (more than 250 million) but not both. Show name, population and area.
 * Australia has a big area but a small population, it should be included.
 * Indonesia has a big population but a small area, it should be included.
 * China has a big population and big area, it should be excluded.
@@ -235,6 +249,7 @@ Divide by 1000000 (6 zeros) for millions. Divide by 1000000000 (9 zeros) for bil
     
 **Missing decimals**  
 For some version of SQL the division of an integer by an integer will be an integer. One way to prevent this is to divide by a floating point number such as 1000000.0.  
+
 ```sql
 SELECT name, ROUND(population/1000000, 2), ROUND(gdp/1000000000, 2)
 FROM world
@@ -249,7 +264,7 @@ WHERE gdp >= 1000000000000;
 ```
 
 11. Show the name and capital where the name and the capital have the same number of characters.  
-You can use the LENGTH function to find the number of characters in a string.  
+You can use the **LENGTH** function to find the number of characters in a string.  
 For Microsoft SQL Server the function LENGTH is LEN.
 ```sql
 SELECT name, capital
@@ -258,8 +273,8 @@ WHERE LENGTH(name) = LENGTH(capital);
 ```
 
 12. Show the name and the capital where the first letters of each match. Don't include countries where the name and the capital are the same word.  
-You can use the function LEFT to isolate the first character.  
-You can use <> as the NOT EQUALS operator.
+You can use the function **LEFT** to isolate the first character.  
+You can use **<>** as the **NOT EQUALS** operator.
 ```sql
 SELECT name, capital
 FROM world
@@ -267,7 +282,7 @@ WHERE LEFT(name, 1) = LEFT(capital, 1) AND name <> capital;
 ```
 
 13. Find the country that has all the vowels and no spaces in its name.  
-You can use the phrase name NOT LIKE '%a%' to exclude characters from your results.  
+You can use the phrase name **NOT LIKE '%a%'** to exclude characters from your results.  
 The query shown misses countries like Bahamas and Belarus because they contain at least one 'a'
 ```sql
 SELECT name
@@ -286,7 +301,7 @@ This tutorial is concerned with a table of Nobel prize winners:
 ```sql
 nobel(yr, subject, winner)
 ```
-Using the SELECT statement.  
+Using the **SELECT** statement.  
 
 1. Change the query shown so that it displays Nobel prizes for 1950.
 ```sql
@@ -331,10 +346,10 @@ WHERE subject = 'literature' AND yr BETWEEN 1980 AND 1989;
 ```sql
 SELECT * 
 FROM nobel
- WHERE winner IN ('Theodore Roosevelt',
-                  'Thomas Woodrow Wilson',
-                  'Jimmy Carter',
-                  'Barack Obama')
+WHERE winner IN ('Theodore Roosevelt',
+                'Thomas Woodrow Wilson',
+                'Jimmy Carter',
+                'Barack Obama')
 ```
 
 7. Show the winners with first name John.
@@ -391,9 +406,9 @@ ORDER BY yr DESC, winner;
 # SELECT within SELECT
 
 ## Using SELECT in SELECT
-See SELECT FROM SELECT for how to use a [derived table](https://sqlzoo.net/wiki/SELECT_.._SELECT).  
+See **SELECT FROM SELECT** for how to use a [derived table](https://sqlzoo.net/wiki/SELECT_.._SELECT).  
 
-The result of a SELECT statement may be used as a value in another statement. For example the statement SELECT continent FROM world WHERE name = 'Brazil' evaluates to 'South America' so we can use this value to obtain a list of all countries in the same continent as 'Brazil'
+The result of a SELECT statement may be used as a value in another statement. For example the statement SELECT continent FROM world WHERE name = 'Brazil' evaluates to 'South America' so we can use this value to obtain a list of all countries in the same continent as 'Brazil'.
 
 1. List each country in the same continent as 'Brazil'.
 ```sql
@@ -407,7 +422,7 @@ WHERE continent = (
 ```
 
 ## Alias
-Some versions of SQL insist that you give the subquery an alias. Simply put AS somename after the closing bracket:
+Some versions of SQL insist that you give the subquery an alias. Simply put **AS** somename after the closing bracket:
 ```sql
 SELECT name 
 FROM world 
@@ -468,7 +483,7 @@ These operators are binary - they normally take two parameters:
 >=    greater or equal
 <=    less or equal
 ```
-You can use the words ALL or ANY where the right side of the operator might have multiple values.  
+You can use the words **ALL** or **ANY** where the right side of the operator might have multiple values.  
   
 4. Show each country that has a population greater than the population of ALL countries in Europe.  
 Note that we mean greater than every single country in Europe; not the combined population of Europe.
@@ -541,10 +556,10 @@ Austria	11%
 ...	...  
   
 **Decimal places**  
-You can use the function ROUND to remove the decimal places.  
+You can use the function **ROUND** to remove the decimal places.  
   
 **Percent symbol %**  
-You can use the function CONCAT to add the percentage symbol.  
+You can use the function **CONCAT** to add the percentage symbol.  
   
 ```sql
 SELECT name, CONCAT(ROUND((population * 100.0) / (
@@ -555,7 +570,7 @@ FROM world
 WHERE continent = 'Europe';
 ```
   
-We can use the word ALL to allow >= or > or < or <= to act over a list. For example, you can find the largest country in the world, by population with this query:  
+We can use the word **ALL** to allow >= or > or < or <= to act over a list. For example, you can find the largest country in the world, by population with this query:  
 ```sql
 SELECT name
 FROM world

@@ -1,10 +1,10 @@
 # SUM and COUNT
 
 ## Aggregate functions
-This tutorial is about aggregate functions such as COUNT, SUM and AVG. An aggregate function takes many values and delivers just one value.  
+This tutorial is about aggregate functions such as **COUNT**, **SUM** and **AVG**. An aggregate function takes many values and delivers just one value.  
 
 ### Aggregates
-The functions **SUM**, **COUNT**, **MAX** and **AVG** are "aggregates", each may be applied to a numeric attribute resulting in a single row being returned by the query. (These functions are even more useful when used with the GROUP BY clause.)  
+The functions **SUM**, **COUNT**, **MAX** and **AVG** are "aggregates", each may be applied to a numeric attribute resulting in a single row being returned by the query. (These functions are even more useful when used with the **GROUP BY** clause.)  
 
 ### Distinct
 By default the result of a SELECT may contain duplicate rows. We can remove these duplicates using the **DISTINCT** key word.  
@@ -96,7 +96,7 @@ GROUP BY continent;
 ```
 
 3. **WHERE and GROUP BY**  
-The WHERE filter takes place before the aggregating function.  
+The **WHERE** filter takes place before the aggregating function.  
 For each relevant continent show the number of countries that has a population of at least 200000000.
 ```sql
 SELECT continent, COUNT(name)
@@ -106,7 +106,7 @@ GROUP BY continent;
 ```
 
 4. **GROUP BY and HAVING**  
-The HAVING clause is tested after the GROUP BY. You can test the aggregated values with a HAVING clause.  
+The **HAVING** clause is tested after the **GROUP BY**. You can test the aggregated values with a HAVING clause.  
 Show the total population of those continents with a total population of at least half a billion.
 ```sql
 SELECT continent, SUM(population)
@@ -153,7 +153,7 @@ This tutorial concerns aggregate functions such as **COUNT**, **SUM** and **AVG*
 nobel(winner, subject, year)
 ```
 
-Using MAX, AVG, DISTINCT and ORDER BY.  
+Using **MAX**, **AVG**, **DISTINCT** and **ORDER BY**.  
   
 1. Show the total number of prizes awarded.
 ```sql
@@ -163,7 +163,7 @@ FROM nobel;
 
 2. List each subject - just once.
 ```sql
-SELECT DISTINCT(subject)
+SELECT DISTINCT subject
 FROM nobel;
 ```
 
@@ -174,7 +174,7 @@ FROM nobel
 WHERE subject = 'physics';
 ```
   
-Using GROUP BY and HAVING.  
+Using **GROUP BY** and **HAVING**.  
   
 4. For each subject show the subject and the number of prizes.
 ```sql
@@ -198,7 +198,7 @@ WHERE yr = 2000
 GROUP BY subject;
 ```
   
-Using aggregates with DISTINCT.
+Using aggregates with **DISTINCT**.
   
 7. Show the number of different winners for each subject. Be aware that Frederick Sanger has won the chemistry prize twice - he should only be counted once.
 ```sql
@@ -209,12 +209,12 @@ GROUP BY subject;
 
 8. For each subject show how many years have had prizes awarded.
 ```sql
-SELECT subject, COUNT(DISTINCT(yr))
+SELECT subject, COUNT(DISTINCT yr)
 FROM nobel
 GROUP BY subject;
 ```
   
-Using HAVING.  
+Using **HAVING**.  
   
 9. Show the years in which three prizes were given for Physics.
 ```sql
@@ -238,10 +238,10 @@ HAVING COUNT(winner) > 1;
 SELECT winner
 FROM nobel
 GROUP BY winner
-HAVING COUNT(DISTINCT(subject)) > 1;
+HAVING COUNT(DISTINCT subject) > 1;
 ```
   
-GROUP BY yr, subject.  
+**GROUP BY** yr, subject.  
   
 12. Show the year and subject where 3 prizes were given. Show only years 2000 onwards.
 ```sql

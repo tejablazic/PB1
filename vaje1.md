@@ -16,7 +16,6 @@ WHERE ocena > 8 AND glasovi > 10000
 ORDER BY ocena DESC, naslov;
 ```
 
-
 ```sql
 SELECT naslov, ROUND(ocena)
 FROM film
